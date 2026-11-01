@@ -53,7 +53,7 @@ void vTaskLed(void *ptr) {
 
         } else if (result & LUM_MOYENNE) {
 
-            if (strcmp(led->getName(), "LED_ROUGE") == 0) {
+            if (strcmp(led->getName(), "rouge") == 0) {
                 led->off();
             } else {
                 led->on();
@@ -61,7 +61,7 @@ void vTaskLed(void *ptr) {
 
         } else if (result & LUM_FORTE) {
 
-            if (strcmp(led->getName(), "LED_ROUGE") == 0) {
+            if (strcmp(led->getName(), "rouge") == 0) {
                 led->on();
             } 
             else {
