@@ -24,7 +24,7 @@
 // Creation de l'objet LDR
 LDR capteur(LDR_PIN);
 
-Led ledGreen(LED_VERTE, "verte");
+Led ledVerte(LED_VERTE, "verte");
 Led ledJaune(LED_JAUNE, "jaune");
 Led ledRouge(LED_ROUGE, "rouge");
 
@@ -107,30 +107,6 @@ void vTaskSensor(void *parameter) {
   }
 }
 
-// TACHE 2 : Controle des DELs
-void vTaskControl(void *parameter) {
-  EventBits_t bits;
-
-  while (1) {
-    bits = xEventGroupWaitBits(groupeEvenements,
-                               LUM_FAIBLE | LUM_MOYENNE | LUM_FORTE, pdFALSE,
-                               pdFALSE, portMAX_DELAY);
-
-    if (bits & LUM_FAIBLE) {
-      ledVerte.on();
-      ledJaune.on();
-      ledRouge.on();
-    } else if (bits & LUM_MOYENNE) {
-      ledVerte.on();
-      ledJaune.on();
-      ledRouge.off();
-    } else if (bits & LUM_FORTE) {
-      ledVerte.off();
-      ledJaune.off();
-      ledRouge.on();
-    }
-  }
-}
 
 void setup() {
   Serial.begin(115200);
@@ -158,7 +134,11 @@ void setup() {
   // Creation des taches
   xTaskCreate(vTaskSensor, "Lecture LDR", 2048, nullptr, 1, nullptr);
 
-  xTaskCreate(vTaskControl, "Controle LEDs", 2048, nullptr, 1, nullptr);
+  xTaskCreate(vTaskLed, "Controle LED VERTE", 2048, &ledVerte, 1, nullptr);
+
+  xTaskCreate(vTaskLed, "Controle LED ROUGE", 2048, &ledRouge, 1, nullptr);
+
+  xTaskCreate(vTaskLed, "Controle LED JAUNE", 2048, &ledJaune, 1, nullptr);
 }
 
 void loop() { vTaskDelay(portMAX_DELAY); }
